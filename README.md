@@ -12,3 +12,4 @@
 - [x] NLU
 - [ ] NLG
 - [ ] STORY
+- [ ] FAQ
