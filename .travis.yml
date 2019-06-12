@@ -1,0 +1,12 @@
+sudo: false
+language: node
+python: 10
+install:
+  - npm i -g yarn
+  - yarn
+script:
+  - yarn test
+  - yarn build
+  - npm install codecov -g
+after_success:
+  - codecov
