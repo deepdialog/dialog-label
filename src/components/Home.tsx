@@ -4,6 +4,9 @@ import { Row, Col, Icon, Upload, message } from 'antd'
 import * as yaml from 'js-yaml'
 import { setSentences } from '../utils/sentences'
 import { setEntities } from '../utils/entities'
+import { setNLG } from '../utils/nlg'
+import { setFAQ } from '../utils/faq'
+import { setStories } from '../utils/stories'
 
 export default class Home extends React.Component {
 
@@ -45,6 +48,9 @@ export default class Home extends React.Component {
                                             message.info(msg)
                                             setSentences(sentences)
                                             setEntities(entities)
+                                            setStories(stories)
+                                            setNLG(nlg)
+                                            setFAQ(faq)
                                             this.setState({ redirect: '/labels' })
                                         } catch (e) {
                                             message.error('读取错误！')

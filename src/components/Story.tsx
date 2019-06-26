@@ -86,7 +86,7 @@ export default class Story extends React.Component {
                 </Row>
                 <Row>
                     <Col offset={3} span={18}>
-                        <form onSubmit={this.onNewSubject}>
+                        <form onSubmit={e => this.onNewSubject(e)}>
                             <Input
                                 value={newSubject}
                                 onChange={e => this.setState({newSubject: e.target.value})}
@@ -138,6 +138,16 @@ export default class Story extends React.Component {
                                                 if (item.hasOwnProperty('user')) {
                                                     return (
                                                         <p>
+                                                            <Button
+                                                                style={{cursor: 'pointer', border: 0, height: '24px'}}
+                                                                icon='close-circle'
+                                                                onClick={() => {
+                                                                    let stories = getStories()
+                                                                    stories[subj] = stories[subj].slice(0, index)
+                                                                    setStories(stories)
+                                                                    this.setState({modified: new Date()})
+                                                                }}
+                                                            />
                                                             <label style={{marginRight: '20px'}}>USER:</label>
                                                             <span>{item['user']}</span>
                                                         </p>
@@ -145,6 +155,16 @@ export default class Story extends React.Component {
                                                 } else if (item.hasOwnProperty('sys')) {
                                                     return (
                                                         <p>
+                                                            <Button
+                                                                style={{cursor: 'pointer', border: 0, height: '24px'}}
+                                                                icon='close-circle'
+                                                                onClick={() => {
+                                                                    let stories = getStories()
+                                                                    stories[subj] = stories[subj].slice(0, index)
+                                                                    setStories(stories)
+                                                                    this.setState({modified: new Date()})
+                                                                }}
+                                                            />
                                                             <label style={{marginRight: '20px'}}>SYS:</label>
                                                             <span>{item['sys']}</span>
                                                         </p>
