@@ -6,8 +6,8 @@ import 'antd/dist/antd.css'
 import * as yaml from 'js-yaml'
 import { saveAs } from 'file-saver'
 
-import { getSentences } from './sentences'
-import { getEntities } from './entities'
+import { getSentences } from '../utils/sentences'
+import { getEntities } from '../utils/entities'
 
 import Label from './Label'
 import Home from './Home'

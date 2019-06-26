@@ -1,7 +1,9 @@
 
+import * as _ from 'lodash'
+
 export function getFAQ () {
-    let faq = localStorage.getItem('faq')
-    if (typeof faq !== 'string') {
+    const faq = localStorage.getItem('faq')
+    if (!_.isString(faq)) {
         return []
     } else {
         try {

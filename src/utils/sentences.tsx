@@ -1,32 +1,33 @@
 
 import { message } from 'antd'
+import * as _ from 'lodash'
 
-function sentenceSort (a, b) {
-    if (a.domain.length !== b.domain.length) {
-        return a.domain.length - b.domain.length
-    }
-    if (a.intent.length !== b.intent.length) {
-        return a.intent.length - b.intent.length
-    }
-    const sa = a.data.map(i => i.text).join()
-    const sb = b.data.map(i => i.text).join()
-    if (sa.length !== sb.length) {
-        return sa.length - sb.length
-    }
-    if (sa > sb) {
-        return 1
-    } else if (sa < sb) {
-        return -1
-    }
-    return 0
-}
+// function sentenceSort (a, b) {
+//     if (a.domain.length !== b.domain.length) {
+//         return a.domain.length - b.domain.length
+//     }
+//     if (a.intent.length !== b.intent.length) {
+//         return a.intent.length - b.intent.length
+//     }
+//     const sa = a.data.map(i => i.text).join()
+//     const sb = b.data.map(i => i.text).join()
+//     if (sa.length !== sb.length) {
+//         return sa.length - sb.length
+//     }
+//     if (sa > sb) {
+//         return 1
+//     } else if (sa < sb) {
+//         return -1
+//     }
+//     return 0
+// }
 
 export let intentNames = []
 export let domainNames = []
 
 export function getSentences () {
-    let sentences = localStorage.getItem('sentences')
-    if (typeof sentences !== 'string') {
+    const sentences = localStorage.getItem('sentences')
+    if (!_.isString(sentences)) {
         return []
     } else {
         try {

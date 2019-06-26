@@ -3,7 +3,7 @@ import * as React from 'react'
 import * as _ from 'lodash'
 import {Row, Col, Form, Input, Button, message, Table} from 'antd'
 const { Item } = Form
-import {setFAQ, getFAQ} from './faq'
+import {setFAQ, getFAQ} from '../utils/faq'
 
 export default class FAQ extends React.Component {
 

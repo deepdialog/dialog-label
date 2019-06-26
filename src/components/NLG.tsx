@@ -3,7 +3,7 @@ import * as React from 'react'
 import * as _ from 'lodash'
 import {Row, Col, Form, Input, Button, message, Table} from 'antd'
 const { Item } = Form
-import {setNLG, getNLG} from './nlg'
+import {setNLG, getNLG} from '../utils/nlg'
 
 export default class NLG extends React.Component {
 

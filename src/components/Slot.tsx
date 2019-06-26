@@ -4,7 +4,7 @@ import * as _ from 'lodash'
 import { Table, Select, Form, Button, Input, message, Row, Col, Tag } from 'antd'
 const { Option } = Select
 const { Item } = Form
-import { getEntities, setEntities, entitiyInnerSort } from './entities'
+import { getEntities, setEntities, entitiyInnerSort } from '../utils/entities'
 
 export default class Slot extends React.Component {
 

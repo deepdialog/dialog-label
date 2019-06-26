@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Link, Redirect } from 'react-router-dom'
 import { Table, Row, Col, message, Form, Input, Button, Icon } from 'antd'
 const { Item } = Form
-import { getEntities, setEntities } from './entities'
+import { getEntities, setEntities } from '../utils/entities'
 
 const Columns = [
     {

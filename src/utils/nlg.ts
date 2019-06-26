@@ -1,7 +1,9 @@
 
+import * as _ from 'lodash'
+
 export function getNLG () {
-    let nlg = localStorage.getItem('nlg')
-    if (typeof nlg !== 'string') {
+    const nlg = localStorage.getItem('nlg')
+    if (!_.isString(nlg)) {
         return []
     } else {
         try {

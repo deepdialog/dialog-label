@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Tag, Icon } from 'antd'
-import { entityNames } from './entities'
-import { getRandomColor } from './colors'
+import { entityNames } from '../utils/entities'
+import { getRandomColor } from '../utils/colors'
 import { isContext } from 'vm'
 
 interface EntityNameProps {

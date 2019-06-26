@@ -2,8 +2,8 @@ import * as React from 'react'
 import { Redirect } from 'react-router-dom'
 import { Row, Col, Icon, Upload, message } from 'antd'
 import * as yaml from 'js-yaml'
-import { setSentences } from './sentences'
-import { setEntities } from './entities'
+import { setSentences } from '../utils/sentences'
+import { setEntities } from '../utils/entities'
 
 export default class Home extends React.Component {
 

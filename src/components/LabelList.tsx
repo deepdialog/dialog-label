@@ -1,9 +1,9 @@
 import * as React from 'react'
 import { Link, Redirect } from 'react-router-dom'
 import { Table, Input, Form, message, Button, Row, Col, Icon, Dropdown, Menu } from 'antd'
-import { getSentences, setSentences, intentNames, domainNames } from './sentences'
+import { getSentences, setSentences, intentNames, domainNames } from '../utils/sentences'
 import { EntityName } from './EntityName'
-import { entityNames } from './entities'
+import { entityNames } from '../utils/entities'
 import { Base64 } from 'js-base64'
 
 

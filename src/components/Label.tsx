@@ -5,9 +5,9 @@ const { Item } = Form
 const { Option } = Select
 import { Base64 } from 'js-base64'
 import * as jaccard from 'jaccard'
-import { getSentences, setSentences, domainNames, intentNames } from './sentences'
-import { getRandomColor } from './colors'
-import { entityNames, getEntities } from './entities'
+import { getSentences, setSentences, domainNames, intentNames } from '../utils/sentences'
+import { getRandomColor } from '../utils/colors'
+import { entityNames, getEntities } from '../utils/entities'
 
 
 interface LabelProps {
