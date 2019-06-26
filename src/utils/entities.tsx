@@ -64,21 +64,3 @@ export function setEntities (entities: any[]) {
     }
     localStorage.setItem('entities', JSON.stringify(entities))
 }
-
-const EntitiesSample = [
-    {
-        'entity': 'city',
-        'data': [
-            '上海市',
-            ['西安市', '西安'],
-            ['北京', '首都', '北京市'],
-        ]
-    }
-]
-
-if (getEntities().length <= 0) {
-    setEntities(EntitiesSample)
-    message.info('当前没有 实体 语料，已经载入默认实体样例')
-} else {
-    message.info(`已经载入了 ${getEntities().length}条 实体样例`)
-}

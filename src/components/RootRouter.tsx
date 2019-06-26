@@ -8,6 +8,9 @@ import { saveAs } from 'file-saver'
 
 import { getSentences } from '../utils/sentences'
 import { getEntities } from '../utils/entities'
+import { getNLG } from '../utils/nlg'
+import { getFAQ } from '../utils/faq'
+import { getStories } from '../utils/stories'
 
 import Label from './Label'
 import Home from './Home'
@@ -17,12 +20,20 @@ import Slot from './Slot'
 import NLG from './NLG'
 import FAQ from './FAQ'
 import Story from './Story'
+import {loadAlert} from '../utils/loadAlert'
 
 export default class RootRouter extends React.Component {
 
     state = {
         redirect: null,
         currentMenu: null,
+    }
+
+    constructor(props) {
+        super(props)
+        document.title = 'Deep Dialog Label'
+
+        loadAlert()
     }
 
     handleClick = (e) => {
@@ -62,7 +73,13 @@ export default class RootRouter extends React.Component {
     }
 
     exportClick = () => {
-        const data = getSentences().concat(getEntities())
+        const data = {
+            nlu: getSentences().concat(getEntities()),
+            story: getStories(),
+            nlg: getNLG(),
+            faq: getFAQ(),
+        }
+        console.log('dump data', data)
         const dump = yaml.safeDump(data)
         // console.log(dump)
         const getDate = () => {
@@ -81,8 +98,9 @@ export default class RootRouter extends React.Component {
     }
 
     deleteAll = e => {
-        localStorage.removeItem('sentences')
-        localStorage.removeItem('entities')
+        // localStorage.removeItem('sentences')
+        // localStorage.removeItem('entities')
+        localStorage.clear()
         this.setState({
             redirect: '/'
         })
@@ -128,7 +146,7 @@ export default class RootRouter extends React.Component {
                                         清空
                                     </Button>
                                 </Popconfirm>
-
+                                
                                 <Menu
                                     selectedKeys={selectedKeys}
                                     mode='horizontal'
@@ -137,6 +155,17 @@ export default class RootRouter extends React.Component {
                                         fontSize: '20px'
                                     }}
                                 >
+                                    <Item
+                                        key='logo'
+                                        style={{
+                                            paddingLeft: 0,
+                                            paddingRight: 0,
+                                            marginRight: '10px',
+                                        }}
+                                        disabled
+                                    >
+                                        DeepDL
+                                    </Item>
                                     <Item key='/'>
                                         Import
                                     </Item>

@@ -1,5 +1,6 @@
 
 import * as _ from 'lodash'
+import {message} from 'antd'
 
 export function getStories () {
     const stories = localStorage.getItem('story')

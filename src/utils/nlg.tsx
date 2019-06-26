@@ -1,5 +1,6 @@
 
 import * as _ from 'lodash'
+import {message} from 'antd'
 
 export function getNLG () {
     const nlg = localStorage.getItem('nlg')
@@ -18,3 +19,4 @@ export function getNLG () {
 export function setNLG (nlg: any[]) {
     localStorage.setItem('nlg', JSON.stringify(nlg))
 }
+

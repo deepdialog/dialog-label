@@ -1,5 +1,6 @@
 
 import * as _ from 'lodash'
+import {message} from 'antd'
 
 export function getFAQ () {
     const faq = localStorage.getItem('faq')

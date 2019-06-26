@@ -116,13 +116,21 @@ export default class Story extends React.Component {
                                     marginTop: '10px',
                                 }}
                                 title={
-                                    <p>
-                                        <label style={{marginRight: '20px'}}>Dialog Subject:</label>
-                                        <span>{subj}</span>
-                                    </p>
+                                    <div>
+                                        <Button
+                                            style={{cursor: 'pointer', border: 0, height: '24px'}}
+                                            icon='close-circle'
+                                            onClick={() => {
+                                                let stories = getStories()
+                                                delete stories[subj]
+                                                setStories(stories)
+                                                this.setState({modified: new Date()})
+                                            }}
+                                        />
+                                        <label>{subj}</label>
+                                    </div>
                                 }
                             >
-
                                 <div>
                                     {stories[subj].map((item: string, index: number) => (
                                         <div key={index}>

@@ -36,9 +36,12 @@ export default class Home extends React.Component {
                                         try {
                                             const text = fr.result
                                             const data = yaml.safeLoad(text)
-                                            const sentences = data.filter(i => i.intent)
-                                            const entities = data.filter(i => i.entity)
-                                            const msg = `读取了 ${sentences.length} 条意图标注， ${entities.length} 个实体`
+                                            const sentences = data.nlu.filter(i => i.intent)
+                                            const entities = data.nlu.filter(i => i.entity)
+                                            const stories = data.story || {}
+                                            const nlg = data.nlg || []
+                                            const faq = data.faq || []
+                                            const msg = `读取了 ${sentences.length} 条意图标注， ${entities.length} 个实体， ${Object.keys(stories).length} 条对话， ${nlg.length} 条对话生成， ${faq.length} 条问答对`
                                             message.info(msg)
                                             setSentences(sentences)
                                             setEntities(entities)
