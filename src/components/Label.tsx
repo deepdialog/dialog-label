@@ -1,13 +1,13 @@
-import * as React from "react";
-import { Redirect } from "react-router-dom";
-import { Select, Input, Tag, Form, Button, message, Icon, List, Row, Col } from "antd";
-const { Item } = Form;
-const { Option } = Select;
-import { Base64 } from 'js-base64';
-import * as jaccard from "jaccard";
-import { getSentences, setSentences, domainNames, intentNames } from "./sentences";
-import { getRandomColor } from "./colors";
-import { entityNames, getEntities } from "./entities";
+import * as React from 'react'
+import { Redirect } from 'react-router-dom'
+import { Select, Input, Tag, Form, Button, message, Icon, List, Row, Col } from 'antd'
+const { Item } = Form
+const { Option } = Select
+import { Base64 } from 'js-base64'
+import * as jaccard from 'jaccard'
+import { getSentences, setSentences, domainNames, intentNames } from '../utils/sentences'
+import { getRandomColor } from '../utils/colors'
+import { entityNames, getEntities } from '../utils/entities'
 
 
 interface LabelProps {
@@ -33,61 +33,61 @@ interface LabelState {
 export default class Label extends React.Component<LabelProps, LabelState> {
 
     constructor (props) {
-        super(props);
+        super(props)
 
-        let title = "新建";
+        let title = '新建'
 
         getSentences().forEach(obj => {
-            const sentence = obj.data.map(i => i.text).join("");
+            const sentence = obj.data.map(i => i.text).join('')
             if (props.match.params.label && sentence === Base64.decode(decodeURIComponent(props.match.params.label))) {
-                title = "修改";
-                this.state.domain = obj.domain;
-                this.state.intent = obj.intent;
+                title = '修改'
+                this.state.domain = obj.domain
+                this.state.intent = obj.intent
                 this.state.entities = obj.data.filter(i => i.name).map(i => {
                     return {
                         start: i.start,
                         end: i.end,
                         value: i.text,
                         name: i.name,
-                    };
-                });
+                    }
+                })
             }
-        });
+        })
         
-        this.state.title = title;
+        this.state.title = title
         this.state.currentLabel = Base64.decode(decodeURIComponent(props.match.params.label))
     }
 
     state = {
         redirect: null,
-        currentLabel: "",
-        infoBox: "",
-        selectedText: "",
+        currentLabel: '',
+        infoBox: '',
+        selectedText: '',
         selectedStart: -1,
         selectedEnd: -1,
         entities: [],
-        domain: "",
-        intent: "",
+        domain: '',
+        intent: '',
         listData: [],
-        listLabel: "",
-        title: "",
+        listLabel: '',
+        title: '',
     }
 
     taggedLabel () {
-        const { currentLabel, entities } = this.state;
-        const ret = [];
+        const { currentLabel, entities } = this.state
+        const ret = []
 
         Array.from(currentLabel).forEach((c, i) => {
-            let inEntity = null;
-            let isStart = false;
+            let inEntity = null
+            let isStart = false
             for (const e of entities) {
                 if (e.start === i) {
-                    inEntity = e;
-                    isStart = true;
-                    break;
+                    inEntity = e
+                    isStart = true
+                    break
                 } else if (i >= e.start && i < e.end) {
-                    inEntity = e;
-                    break;
+                    inEntity = e
+                    break
                 }
             }
             if (isStart) {
@@ -96,34 +96,34 @@ export default class Label extends React.Component<LabelProps, LabelState> {
                         key={i}
                         style={{
                             backgroundColor: getRandomColor(inEntity.name),
-                            padding: "5px",
-                            paddingLeft: "3px",
-                            paddingBottom: "3px",
-                            borderRadius: "5px",
-                            marginLeft: "5px",
-                            marginRight: "5px",
+                            padding: '5px',
+                            paddingLeft: '3px',
+                            paddingBottom: '3px',
+                            borderRadius: '5px',
+                            marginLeft: '5px',
+                            marginRight: '5px',
                         }}
                     >
                         {inEntity.value}
                     </span>
-                );
+                )
             } else if (inEntity) {
-                return;
+                return
             } else {
-                if (ret.length && typeof ret[ret.length - 1] === "string") {
-                    ret[ret.length - 1] += c;
+                if (ret.length && typeof ret[ret.length - 1] === 'string') {
+                    ret[ret.length - 1] += c
                 } else {
-                    ret.push(c);
+                    ret.push(c)
                 }
             }
-        });
+        })
 
-        return ret;
+        return ret
     }
 
     render () {
 
-        document.title = "对话标注 — 意图标注 — " + this.state.currentLabel;
+        document.title = '对话标注 — 意图标注 — ' + this.state.currentLabel
 
         const {
             redirect,
@@ -134,80 +134,80 @@ export default class Label extends React.Component<LabelProps, LabelState> {
             domain, intent,
             listData,
             listLabel,
-        } = this.state;
+        } = this.state
         
         return (
             <div>
                 {redirect ? <Redirect to={redirect} /> : null}
-                <div style={{ marginTop: "10px" }}>
+                <div style={{ marginTop: '10px' }}>
                     <Row>
                         <Col offset={3} span={18}>
                             <h2>{ title }</h2>
                         </Col>
                     </Row>
                     <Item
-                        label="语句"
+                        label='语句'
                         labelCol={{ span: 3 }}
                         wrapperCol={{ span: 18 }}
                     >
                         <div
                             style={{
-                                fontSize: "20px"
+                                fontSize: '20px'
                             }}
-                            id="labelText"
+                            id='labelText'
                             onMouseUp={() => {
-                                const s = window.getSelection();
-                                const range = s.getRangeAt(0);
+                                const s = window.getSelection()
+                                const range = s.getRangeAt(0)
 
                                 if (range.startContainer.parentNode !== range.endContainer.parentNode) {
                                     this.setState({
-                                        infoBox: "错误领域",
-                                        selectedText: "",
+                                        infoBox: '错误领域',
+                                        selectedText: '',
                                         selectedStart: -1,
                                         selectedEnd: -1,
-                                    });
-                                    return;
+                                    })
+                                    return
                                 }
                                 
                                 if (s.anchorNode) {
-                                    if (s.anchorNode.parentNode !== document.querySelector("#labelText")) {
+                                    if (s.anchorNode.parentNode !== document.querySelector('#labelText')) {
                                         this.setState({
-                                            infoBox: "跨实体",
-                                            selectedText: "",
+                                            infoBox: '跨实体',
+                                            selectedText: '',
                                             selectedStart: -1,
                                             selectedEnd: -1,
-                                        });
-                                        return;
+                                        })
+                                        return
                                     }
                                 }
 
-                                let base = 0;
-                                let startContainer = range.startContainer.previousSibling;
+                                let base = 0
+                                let startContainer = range.startContainer.previousSibling
                                 while (startContainer) {
 
                                     if (startContainer.textContent && startContainer.textContent.length) {
-                                        base += startContainer.textContent.length;
+                                        base += startContainer.textContent.length
                                     }
 
-                                    startContainer = startContainer.previousSibling;
+                                    startContainer = startContainer.previousSibling
                                 }
 
                                 this.setState({
                                     selectedText: s.toString(),
                                     selectedStart: range.startOffset + base,
                                     selectedEnd: range.endOffset + base,
-                                });
+                                })
                             }}
                         >{ this.taggedLabel() }</div>
-                        <div style={{ float: "left" }}>↑拖动并选中部分文字来标注实体↑</div>
+                        <div style={{ float: 'left' }}>↑拖动并选中部分文字来标注实体↑</div>
                     </Item>
                     <Item
-                        label="领域"
+                        label='领域'
                         labelCol={{ span: 3 }}
                         wrapperCol={{ span: 18 }}
                     >
                         <HintInput
-                            placeholder="选填"
+                            placeholder='选填'
                             style={{width: 200}}
                             value={domain}
                             onChange={domain => this.setState({ domain })}
@@ -215,12 +215,12 @@ export default class Label extends React.Component<LabelProps, LabelState> {
                         />
                     </Item>
                     <Item
-                        label="意图"
+                        label='意图'
                         labelCol={{ span: 3 }}
                         wrapperCol={{ span: 18 }}
                     >
                         <HintInput
-                            placeholder="必填"
+                            placeholder='必填'
                             style={{width: 200}}
                             value={intent}
                             onChange={intent => this.setState({ intent })}
@@ -228,7 +228,7 @@ export default class Label extends React.Component<LabelProps, LabelState> {
                         />
                     </Item>
                     <Item
-                        label="实体"
+                        label='实体'
                         labelCol={{ span: 3 }}
                         wrapperCol={{ span: 18 }}
                     >
@@ -240,13 +240,13 @@ export default class Label extends React.Component<LabelProps, LabelState> {
                                 onClose={() => {
                                     const newEntities = entities.filter(ne => {
                                         if (e.start === ne.start) {
-                                            return false;
+                                            return false
                                         }
-                                        return true;
-                                    });
+                                        return true
+                                    })
                                     this.setState({
                                         entities: newEntities
-                                    });
+                                    })
                                 }}
                                 style={{
                                     borderColor: getRandomColor(e.name)
@@ -254,9 +254,9 @@ export default class Label extends React.Component<LabelProps, LabelState> {
                             >
                                 {entityNames.indexOf(e.name) === -1 ? (
                                     <Icon
-                                        type="exclamation-circle"
-                                        title="这个实体还未在实体界面添加！"
-                                        style={{ marginRight: "5px" }}
+                                        type='exclamation-circle'
+                                        title='这个实体还未在实体界面添加！'
+                                        style={{ marginRight: '5px' }}
                                     />
                                 ) : null}
                                 {e.name} : {e.value}
@@ -265,7 +265,7 @@ export default class Label extends React.Component<LabelProps, LabelState> {
                         { this.showSelect() }
                     </Item>
                     <Item
-                        label="管理"
+                        label='管理'
                         labelCol={{ span: 3 }}
                         wrapperCol={{ span: 18 }}
                     >
@@ -273,85 +273,85 @@ export default class Label extends React.Component<LabelProps, LabelState> {
                             onClick={() => {
 
                                 if (intent.trim().length <= 0) {
-                                    return message.warning("意图必填");
+                                    return message.warning('意图必填')
                                 }
 
-                                if (intent.trim().indexOf(" ") !== -1) {
-                                    return message.warning("意图不能有空格，请使用下划线");
+                                if (intent.trim().indexOf(' ') !== -1) {
+                                    return message.warning('意图不能有空格，请使用下划线')
                                 }
 
-                                if (domain.trim().indexOf(" ") !== -1) {
-                                    return message.warning("领域不能有空格，请使用下划线");
+                                if (domain.trim().indexOf(' ') !== -1) {
+                                    return message.warning('领域不能有空格，请使用下划线')
                                 }
 
-                                const obj = this.generate();
+                                const obj = this.generate()
 
-                                const sentence = obj.data.map(i => i.text).join("");
-                                const sentences = getSentences();
+                                const sentence = obj.data.map(i => i.text).join('')
+                                const sentences = getSentences()
 
                                 const result = sentences.filter(o => {
-                                    if (sentence === o.data.map(i => i.text).join("")) {
-                                        return false;
+                                    if (sentence === o.data.map(i => i.text).join('')) {
+                                        return false
                                     }
-                                    return true;
-                                }).concat([obj]);
-                                setSentences(result);
+                                    return true
+                                }).concat([obj])
+                                setSentences(result)
 
                                 if (this.props.match.params.filter) {
                                     this.setState({
                                         redirect: `/labels/${encodeURIComponent(this.props.match.params.filter)}`
-                                    });
+                                    })
                                 } else {
                                     this.setState({
-                                        redirect: "/labels"
-                                    });
+                                        redirect: '/labels'
+                                    })
                                 }
                             }}
-                            style={{ marginRight: "20px" }}
-                            title="返回意图列表 并且 保存结果"
+                            style={{ marginRight: '20px' }}
+                            title='返回意图列表 并且 保存结果'
                         >
                             保存
                         </Button>
                         <Button
                             onClick={() => {
                                 if (entities.length <= 0) {
-                                    return message.info("必须有实体标注，才能展示样例");
+                                    return message.info('必须有实体标注，才能展示样例')
                                 }
-                                let rets = [];
+                                let rets = []
                                 for (let i = 0; i < 100; i++) {
-                                    const s = this.generateSample();
+                                    const s = this.generateSample()
                                     if (rets.indexOf(s) === -1 && currentLabel !== s) {
-                                        rets.push(s);
+                                        rets.push(s)
                                     }
                                     if (rets.length >= 5) {
-                                        break;
+                                        break
                                     }
                                 }
                                 this.setState({
-                                    listLabel: "样例结果",
+                                    listLabel: '样例结果',
                                     listData: rets,
                                 })
                             }}
-                            style={{ marginRight: "20px" }}
-                            title="点击查看此句子配合实体类型中其他实体的情况"
+                            style={{ marginRight: '20px' }}
+                            title='点击查看此句子配合实体类型中其他实体的情况'
                         >
                             样例
                         </Button>
                         <Button
-                            title="点击查看意图句子列表中的相似句子（如果这是修改句子而不是新建，会有一个相似度为 1 的句子）"
+                            title='点击查看意图句子列表中的相似句子（如果这是修改句子而不是新建，会有一个相似度为 1 的句子）'
                             onClick={() => {
-                                const distance = this.findSimilar();
+                                const distance = this.findSimilar()
                                 this.setState({
-                                    listLabel: "相似结果",
+                                    listLabel: '相似结果',
                                     listData: distance.slice(0, 5).map(item => (
                                         <span>
-                                            <span style={{minWidth: "60px", display: "inline-block", textAlign: "left"}}>
+                                            <span style={{minWidth: '60px', display: 'inline-block', textAlign: 'left'}}>
                                                 {item.distance.toFixed(2)}
                                             </span>
-                                            <span style={{minWidth: "120px", display: "inline-block", textAlign: "left"}}>
+                                            <span style={{minWidth: '120px', display: 'inline-block', textAlign: 'left'}}>
                                                 {item.domain}
                                             </span>
-                                            <span style={{minWidth: "120px", display: "inline-block", textAlign: "left"}}>
+                                            <span style={{minWidth: '120px', display: 'inline-block', textAlign: 'left'}}>
                                                 {item.intent}
                                             </span>
                                             <span>{item.text}</span>
@@ -359,7 +359,7 @@ export default class Label extends React.Component<LabelProps, LabelState> {
                                     ))
                                 })
                             }}
-                            style={{ marginRight: "20px" }}
+                            style={{ marginRight: '20px' }}
                         >
                             相似
                         </Button>
@@ -368,15 +368,15 @@ export default class Label extends React.Component<LabelProps, LabelState> {
                                 if (this.props.match.params.filter) {
                                     this.setState({
                                         redirect: `/labels/${encodeURIComponent(this.props.match.params.filter)}`
-                                    });
+                                    })
                                 } else {
                                     this.setState({
-                                        redirect: "/labels"
-                                    });
+                                        redirect: '/labels'
+                                    })
                                 }
                             }}
-                            style={{ marginRight: "20px" }}
-                            title="返回意图列表，不保存结果"
+                            style={{ marginRight: '20px' }}
+                            title='返回意图列表，不保存结果'
                         >
                             返回
                         </Button>
@@ -387,7 +387,7 @@ export default class Label extends React.Component<LabelProps, LabelState> {
                             labelCol={{ span: 3 }}
                             wrapperCol={{ span: 18 }}
                         >
-                            <Button onClick={() => this.setState({ listLabel: "", listData: [] })} >关闭</Button>
+                            <Button onClick={() => this.setState({ listLabel: '', listData: [] })} >关闭</Button>
                             <List
                                 dataSource={listData}
                                 renderItem={t => (
@@ -400,7 +400,7 @@ export default class Label extends React.Component<LabelProps, LabelState> {
                     ) : null}
                 </div>
             </div>
-        );
+        )
     }
 
     /**
@@ -409,133 +409,133 @@ export default class Label extends React.Component<LabelProps, LabelState> {
      * @param n gram
      */
     nGram (arr, n) {
-        arr = Array.from(arr);
-        let ret = [];
+        arr = Array.from(arr)
+        let ret = []
         for (let i = n - 1; i < arr.length; i++) {
-            let c = [];
+            let c = []
             for (let j = i - (n - 1); j <= i; j++) {
-                c.push(arr[j]);
+                c.push(arr[j])
             }
             if (c.length) {
-                ret.push(c.join(""));
+                ret.push(c.join(''))
             }
         }
-        return ret;
+        return ret
     }
 
     findSimilar () {
-        const sentences = getSentences();
-        const database = [];
+        const sentences = getSentences()
+        const database = []
         for (const s of sentences) {
-            let parts = [];
+            let parts = []
             for (const part of s.data) {
                 if (part.name) {
-                    parts.push(part.name);
+                    parts.push(part.name)
                 } else {
-                    parts = parts.concat(Array.from(part.text));
+                    parts = parts.concat(Array.from(part.text))
                 }
             }
             if (parts) {
                 database.push({
                     parts,
-                    text: s.data.map(i => i.text).join(""),
+                    text: s.data.map(i => i.text).join(''),
                     domain: s.domain,
                     intent: s.intent,
-                });
+                })
             }
         }
         
-        const obj = this.generate();
-        let self = [];
+        const obj = this.generate()
+        let self = []
         for (const part of obj.data) {
             if (part.name) {
-                self.push(part.name);
+                self.push(part.name)
             } else {
-                self = self.concat(Array.from(part.text));
+                self = self.concat(Array.from(part.text))
             }
         }
-        // const selfText = self.join("");
-        const self2Gram = this.nGram(self, 2);
-        const self3Gram = this.nGram(self, 3);
-        const selfAll = self.concat(self2Gram).concat(self3Gram);
+        // const selfText = self.join('')
+        const self2Gram = this.nGram(self, 2)
+        const self3Gram = this.nGram(self, 3)
+        const selfAll = self.concat(self2Gram).concat(self3Gram)
 
         const distance = database.map(item => {
 
-            const item2Gram = this.nGram(item.parts, 2);
-            const item3Gram = this.nGram(item.parts, 3);
-            const itemAll = item.parts.concat(item2Gram).concat(item3Gram);
+            const item2Gram = this.nGram(item.parts, 2)
+            const item3Gram = this.nGram(item.parts, 3)
+            const itemAll = item.parts.concat(item2Gram).concat(item3Gram)
             return {
                 ...item,
                 distance: jaccard.index(itemAll, selfAll),
             }
-        });
+        })
         distance.sort((a, b) => {
-            return b.distance - a.distance;
-        });
+            return b.distance - a.distance
+        })
 
-        // console.log("self", distance);
-        return distance;
+        // console.log('self', distance)
+        return distance
     }
 
     generateSample () {
-        const obj = this.generate();
-        const allEntities = getEntities();
-        const entityData = {};
+        const obj = this.generate()
+        const allEntities = getEntities()
+        const entityData = {}
         for (const o of allEntities) {
-            entityData[o.entity] = o.data;
+            entityData[o.entity] = o.data
         }
 
-        let sen = [];
+        let sen = []
         for (const o of obj.data) {
             if (o.name) {
                 if (entityNames.indexOf(o.name) === -1) {
-                    sen.push(o.text);
+                    sen.push(o.text)
                 } else if (entityData[o.name].length <= 0) {
-                    sen.push(o.text);
+                    sen.push(o.text)
                 } else {
-                    let has = false;
+                    let has = false
                     for (let i = 0; i < 10; i++) {
-                        const ind = Math.floor(Math.random() * entityData[o.name].length);
-                        const newText = entityData[o.name][ind];
-                        if (typeof newText === "string" && newText !== o.text) {
-                            sen.push(newText);
-                            has = true;
-                            break;
+                        const ind = Math.floor(Math.random() * entityData[o.name].length)
+                        const newText = entityData[o.name][ind]
+                        if (typeof newText === 'string' && newText !== o.text) {
+                            sen.push(newText)
+                            has = true
+                            break
                         } else if (newText.join) {
-                            const indSub = Math.floor(Math.random() * newText.length);
-                            const nt = newText[indSub];
-                            if (typeof nt === "string" && nt !== o.text) {
-                                sen.push(nt);
-                                has = true;
-                                break;
+                            const indSub = Math.floor(Math.random() * newText.length)
+                            const nt = newText[indSub]
+                            if (typeof nt === 'string' && nt !== o.text) {
+                                sen.push(nt)
+                                has = true
+                                break
                             }
                         }
                     }
                     if (!has) {
-                        sen.push(o.text);
+                        sen.push(o.text)
                     }
                 }
             } else {
-                sen.push(o.text);
+                sen.push(o.text)
             }
         }
-        return sen.join("");
+        return sen.join('')
     }
 
     generate () {
-        const { currentLabel, entities, domain, intent } = this.state;
-        const ret = [];
+        const { currentLabel, entities, domain, intent } = this.state
+        const ret = []
         Array.from(currentLabel).forEach((c, i) => {
-            let inEntity = null;
-            let isStart = false;
+            let inEntity = null
+            let isStart = false
             for (const e of entities) {
                 if (e.start === i) {
-                    inEntity = e;
-                    isStart = true;
-                    break;
+                    inEntity = e
+                    isStart = true
+                    break
                 } else if (i >= e.start && i < e.end) {
-                    inEntity = e;
-                    break;
+                    inEntity = e
+                    break
                 }
             }
             if (isStart) {
@@ -544,34 +544,34 @@ export default class Label extends React.Component<LabelProps, LabelState> {
                     start: inEntity.start,
                     end: inEntity.end,
                     name: inEntity.name,
-                });
+                })
             } else if (inEntity) {
-                return;
+                return
             } else {
                 if (ret.length && !ret[ret.length - 1].name) {
-                    ret[ret.length - 1].text += c;
+                    ret[ret.length - 1].text += c
                 } else {
                     ret.push({
                         text: c
-                    });
+                    })
                 }
             }
-        });
+        })
 
         const obj = {
             domain: domain.trim(),
             intent: intent.trim(),
             data: ret,
-        };
+        }
 
-        return obj;
+        return obj
     }
 
     showSelect () {
         const {
             selectedText, selectedStart, selectedEnd,
             entities,
-        } = this.state;
+        } = this.state
 
         if (selectedText && selectedText.length) {
             return (
@@ -586,34 +586,34 @@ export default class Label extends React.Component<LabelProps, LabelState> {
                                 end: selectedEnd,
                                 value: selectedText,
                                 name,
-                            }]);
+                            }])
                             newEntities.sort((a, b) => {
-                                return a.start - b.start;
-                            });
+                                return a.start - b.start
+                            })
                             this.setState({
-                                infoBox: "",
-                                selectedText: "",
+                                infoBox: '',
+                                selectedText: '',
                                 selectedStart: -1,
                                 selectedEnd: -1,
                                 entities: newEntities,
-                            });
+                            })
                         }}
-                        placeholder="点击这里选择实体名称，或者输入新实体名称并回车"
+                        placeholder='点击这里选择实体名称，或者输入新实体名称并回车'
                         data={entities.map(e => {
                             return {
                                 text: e.name,
                                 value: e.name,
-                            };
+                            }
                         })}
                         style={{
                             width: 500,
                         }}
                     />
                 </div>
-            );
+            )
         }
 
-        return null;
+        return null
     }
     
 }
@@ -637,11 +637,11 @@ interface HintInputState {
 class HintInput extends React.Component<HintInputProps, HintInputState> {
 
     render () {
-        const { placeholder, style, value, onChange, options } = this.props;
+        const { placeholder, style, value, onChange, options } = this.props
         if (options && options.length) {
             return (
                 <Select
-                    mode="combobox"
+                    mode='combobox'
                     onChange={ onChange }
                     value={ value }
                     placeholder={ placeholder }
@@ -657,7 +657,7 @@ class HintInput extends React.Component<HintInputProps, HintInputState> {
         } else {
             return (
                 <Select
-                    mode="combobox"
+                    mode='combobox'
                     onChange={ onChange }
                     value={ value }
                     placeholder={ placeholder }
@@ -687,28 +687,28 @@ interface SlotNameInputState {
 class SlotNameInput extends React.Component<SlotNameInputProps, SlotNameInputState> {
 
     state = {
-        value: "",
+        value: '',
         data: []
     }
 
     submit = (e, value=null) => {
         if (e) {
-            e.preventDefault();
+            e.preventDefault()
         }
-        this.props.onSubmit(value || this.state.value);
+        this.props.onSubmit(value || this.state.value)
     }
 
     handleChange = (value) => {
-        this.setState({ value });
+        this.setState({ value })
     }
 
     constructor (props) {
-        super(props);
-        this.state.data = props.data;
+        super(props)
+        this.state.data = props.data
     }
 
     getValue () {
-        return this.state.value;
+        return this.state.value
     }
 
     render () {
@@ -722,16 +722,16 @@ class SlotNameInput extends React.Component<SlotNameInputProps, SlotNameInputSta
     }
 
     inner () {
-        const { placeholder, style } = this.props;
-        const { value } = this.state;
+        const { placeholder, style } = this.props
+        const { value } = this.state
 
         let options = entityNames.map(i => i).filter(i => {
-            return i.indexOf(value) !== -1;
-        });
+            return i.indexOf(value) !== -1
+        })
 
         if (options.length) {
             options.sort((a, b) => {
-                return a.indexOf(value) - b.indexOf(value);
+                return a.indexOf(value) - b.indexOf(value)
             })
             options = options.map(i => (
                 <Option
@@ -740,10 +740,10 @@ class SlotNameInput extends React.Component<SlotNameInputProps, SlotNameInputSta
                 >
                     {i}
                 </Option>
-            ));
+            ))
             return (
                 <Select
-                    mode="combobox"
+                    mode='combobox'
                     value={ value }
                     placeholder={ placeholder }
                     style={ style }
@@ -752,18 +752,18 @@ class SlotNameInput extends React.Component<SlotNameInputProps, SlotNameInputSta
                     filterOption={ false }
                     onChange={ this.handleChange }
                     onSelect={ value => {
-                        this.handleChange(value);
-                        this.submit(null, value);
+                        this.handleChange(value)
+                        this.submit(null, value)
                     }}
                 >
                     { options }
                 </Select>
-            );
+            )
         }
 
         return (
             <Select
-                mode="combobox"
+                mode='combobox'
                 value={ value }
                 placeholder={ placeholder }
                 style={ style }
@@ -772,11 +772,11 @@ class SlotNameInput extends React.Component<SlotNameInputProps, SlotNameInputSta
                 filterOption={ false }
                 onChange={ this.handleChange }
                 onSelect={ value => {
-                    this.handleChange(value);
-                    this.submit(null, value);
+                    this.handleChange(value)
+                    this.submit(null, value)
                 }}
             />
-        );
+        )
     }
 
 }
