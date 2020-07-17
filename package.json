@@ -84,7 +84,7 @@
     "js-base64": "^2.5.1",
     "js-md5": "^0.7.3",
     "js-yaml": "^3.13.1",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.19",
     "react-router": "^5.0.0",
     "react-router-dom": "^5.0.0"
   },
